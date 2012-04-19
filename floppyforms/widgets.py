@@ -509,13 +509,36 @@ class SelectMultiple(Select):
 class RadioSelect(Select):
     template_name = 'floppyforms/radio.html'
 
+    def id_for_label(self, id_):
+        # RadioSelect is represented by multiple <input type="radio"> fields,
+        # each of which has a distinct ID. The IDs are made distinct by a "_X"
+        # suffix, where X is the one-based (in floppyforms, zero-based in
+        # Django) index of the radio field . Thus, the label for a RadioSelect
+        # should reference the first one ('_1').
+        if id_:
+            id_ += '_1'
+        return id_
+    id_for_label = classmethod(id_for_label)
+
 
 class CheckboxSelectMultiple(SelectMultiple):
     template_name = 'floppyforms/checkbox_select.html'
 
+    def id_for_label(self, id_):
+        # See the comment for RadioSelect.id_for_label()
+        if id_:
+            id_ += '_1'
+        return id_
+    id_for_label = classmethod(id_for_label)
+
 
 class MultiWidget(forms.MultiWidget):
-    pass
+    def id_for_label(self, id_):
+        # See the comment for RadioSelect.id_for_label()
+        if id_:
+            id_ += '_1'
+        return id_
+    id_for_label = classmethod(id_for_label)
 
 
 class SplitDateTimeWidget(MultiWidget):
